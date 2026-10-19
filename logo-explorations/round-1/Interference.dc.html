@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Interference mark</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Atkinson+Hyperlegible:wght@400&display=swap">
+<style>
+body{margin:0}
+a{color:#a06bff}a:hover{color:#ff5ad6}
+</style>
+</helmet>
+<div style="width: 640px; height: 440px; box-sizing: border-box; padding: 48px; background: #08050f; color: #f1ebff; display: flex; align-items: center; gap: 48px; font-family: 'Atkinson Hyperlegible', sans-serif;">
+  <svg width="200" height="200" viewBox="-100 -100 200 200" role="img" aria-label="Three thick rings in violet, green and magenta, slightly offset so they overlap like an oil slick, each left open at the same point" style="flex: none;">
+    <g style="mix-blend-mode: screen;">
+      <circle cx="-10" cy="6" r="66" fill="none" stroke="#a06bff" stroke-width="18" stroke-dasharray="372 60" stroke-dashoffset="-20" transform="rotate(-70 -10 6)"/>
+      <circle cx="10" cy="6" r="66" fill="none" stroke="#37e8a4" stroke-width="18" stroke-dasharray="372 60" stroke-dashoffset="-20" transform="rotate(-70 10 6)"/>
+      <circle cx="0" cy="-10" r="66" fill="none" stroke="#ff5ad6" stroke-width="18" stroke-dasharray="372 60" stroke-dashoffset="-20" transform="rotate(-70 0 -10)"/>
+    </g>
+  </svg>
+  <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0;">
+    <div style="font-family: Syne, sans-serif; font-weight: 800; font-size: 56px; line-height: 0.95; letter-spacing: -0.02em;">Open<br>Moment</div>
+    <div style="font-size: 14px; line-height: 20px; color: #ab9ec6;">Every number is somebody.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":640,"height":440}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
