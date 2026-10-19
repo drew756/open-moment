@@ -1,0 +1,43 @@
+<!-- @dsCard height=320 -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Atkinson+Hyperlegible:wght@400&display=swap">
+<style>
+  html, body { margin: 0; background: var(--void); }
+  .cover { position: relative; width: 960px; height: 320px; overflow: hidden; background: var(--void); font-family: var(--font-display); }
+  .cover svg { position: absolute; top: 0; left: 0; display: block; }
+  .violet { fill: var(--violet); }
+  .green { fill: var(--green); }
+  .magenta { fill: var(--magenta); }
+  .quiet { fill: var(--hairline); }
+  .tile { rx: var(--radius-0); }
+  .name { position: absolute; left: 48px; bottom: 56px; margin: 0; max-width: 440px; font-family: var(--font-display); font-weight: 800; font-size: 112px; line-height: .95; letter-spacing: -0.02em; color: var(--ink); text-wrap: balance; }
+  .tagline { position: absolute; left: 50px; bottom: 28px; margin: 0; max-width: 440px; font-family: var(--font-body); font-size: 14px; line-height: 16px; color: var(--ink-muted); }
+</style>
+<div class="cover">
+  <!--
+    blocks: violet 240×160 (top-left of the zone), green 240×160, magenta 240×160, quiet (hairline) 120×80 — the slick at full value on void, bleeding off the top and right.
+    arrangement: the zone x=480..960 is one block cut into quarters; one quarter cuts again, and again, and again (four levels), with space-1 (4px) of void between pieces.
+    pattern: the literal motif row — the brand's one drawing is a breakdown, a number subdividing along one path toward one person, so the pattern is that recursion itself, ending on a single magenta square.
+    scales: cuts are space-1 (4px); pieces are halves (240, 120, 60, 30 × 160, 80, 40, 20); every piece radius-0, because pieces of a number are square.
+  -->
+  <svg width="960" height="320" viewBox="0 0 960 320" aria-hidden="true">
+    <!-- level 1: 240×160 -->
+    <rect class="tile violet" x="482" y="2" width="236" height="156"/>
+    <rect class="tile green" x="722" y="2" width="236" height="156"/>
+    <rect class="tile magenta" x="722" y="162" width="236" height="156"/>
+    <!-- level 2 inside (480,160): 120×80 -->
+    <rect class="tile violet" x="482" y="162" width="116" height="76"/>
+    <rect class="tile quiet" x="482" y="242" width="116" height="76"/>
+    <rect class="tile green" x="602" y="242" width="116" height="76"/>
+    <!-- level 3 inside (600,160): 60×40 -->
+    <rect class="tile magenta" x="602" y="162" width="56" height="36"/>
+    <rect class="tile violet" x="662" y="162" width="56" height="36"/>
+    <rect class="tile green" x="662" y="202" width="56" height="36"/>
+    <!-- level 4 inside (600,200): 30×20 -->
+    <rect class="tile violet" x="602" y="202" width="26" height="16"/>
+    <rect class="tile green" x="632" y="202" width="26" height="16"/>
+    <rect class="tile quiet" x="602" y="222" width="26" height="16"/>
+    <rect class="tile magenta" x="632" y="222" width="26" height="16"/>
+  </svg>
+  <h1 class="name">Open<br>Moment</h1>
+  <p class="tagline">Every number is somebody.</p>
+</div>
