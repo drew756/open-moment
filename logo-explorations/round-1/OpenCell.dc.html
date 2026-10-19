@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Open Cell mark</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Atkinson+Hyperlegible:wght@400&display=swap">
+<style>
+body{margin:0}
+a{color:#a06bff}a:hover{color:#ff5ad6}
+</style>
+</helmet>
+<div style="width: 640px; height: 440px; box-sizing: border-box; padding: 48px; background: #08050f; color: #f1ebff; display: flex; align-items: center; gap: 48px; font-family: 'Atkinson Hyperlegible', sans-serif;">
+  <svg width="200" height="200" viewBox="-20 -20 200 200" role="img" aria-label="A thick square ring with its top-right corner removed; the missing corner piece sits just outside, in magenta" style="flex: none;">
+    <rect x="0" y="0" width="28" height="160" fill="#a06bff"/>
+    <rect x="0" y="132" width="160" height="28" fill="#a06bff"/>
+    <rect x="28" y="0" width="92" height="28" fill="#37e8a4"/>
+    <rect x="132" y="40" width="28" height="92" fill="#37e8a4"/>
+    <rect x="144" y="-12" width="28" height="28" fill="#ff5ad6"/>
+  </svg>
+  <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0;">
+    <div style="font-family: Syne, sans-serif; font-weight: 800; font-size: 56px; line-height: 0.95; letter-spacing: -0.02em;">Open<br>Moment</div>
+    <div style="font-size: 14px; line-height: 20px; color: #ab9ec6;">Every number is somebody.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":640,"height":440}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
