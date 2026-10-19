@@ -1,0 +1,38 @@
+<!-- @dsCard group="Data" height=260 subtitle="A count, its breakdown, and its receipt" -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+  html, body { margin: 0; background: var(--void); color: var(--ink); font-family: var(--font-body); }
+  .figure { display: grid; grid-template-columns: 1fr 240px; gap: var(--space-6); align-items: end; max-width: 640px; padding: var(--space-6); background: var(--surface); border: 1px solid var(--hairline); border-radius: var(--radius-md); }
+  .eyebrow { font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted); margin: 0 0 var(--space-2); }
+  .count { font-family: var(--font-data); font-size: 48px; line-height: 1; font-weight: 700; font-variant-numeric: tabular-nums; margin: 0 0 var(--space-3); }
+  .source { font-size: 14px; line-height: 20px; color: var(--ink-muted); margin: 0; }
+  .legend { font-family: var(--font-data); font-size: 14px; line-height: 20px; margin: var(--space-3) 0 0; padding: 0; list-style: none; display: grid; gap: 2px; }
+  .legend li { display: flex; gap: var(--space-2); align-items: center; }
+  .sw { width: 10px; height: 10px; flex: none; }
+  .violet { fill: var(--violet); background: var(--violet); }
+  .green { fill: var(--green); background: var(--green); }
+  .magenta { fill: var(--magenta); background: var(--magenta); }
+  .quiet { fill: var(--hairline); background: var(--hairline); }
+  svg { display: block; width: 240px; height: 160px; }
+</style>
+<div class="figure">
+  <div>
+    <p class="eyebrow">People in Texas county jails tonight</p>
+    <p class="count">68,412</p>
+    <ul class="legend">
+      <li><span class="sw violet"></span>47,210 not yet convicted</li>
+      <li><span class="sw green"></span>14,980 convicted, serving or awaiting transfer</li>
+      <li><span class="sw magenta"></span>6,222 other holds</li>
+    </ul>
+    <p class="source" style="margin-top: var(--space-3)">Example figures. Source: TCJS Abbreviated Population Report (Gov't Code Ch. 511)</p>
+  </div>
+  <svg viewBox="0 0 240 160" aria-label="Breakdown of the count">
+    <rect class="violet" x="0" y="0" width="164" height="156"/>
+    <rect class="green" x="168" y="0" width="72" height="96"/>
+    <rect class="magenta" x="168" y="100" width="34" height="56"/>
+    <rect class="quiet" x="206" y="100" width="34" height="26"/>
+    <rect class="violet" x="206" y="130" width="15" height="26"/>
+    <rect class="green" x="225" y="130" width="15" height="11"/>
+    <rect class="magenta" x="225" y="145" width="15" height="11"/>
+  </svg>
+</div>
