@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Open Moment Mark</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+  /* Layout: full-bleed live fractal; the wordmark sits bottom-left over it; a thin control strip at the top. Single dark look (the Slick). */
+  :root {
+    --void: #08050f; --surface: #150e21; --raised: #211636; --hairline: #3a2a55;
+    --ink: #f1ebff; --muted: #ab9ec6; --violet: #a06bff; --green: #37e8a4; --magenta: #ff5ad6; --gold: #f2c86b;
+    --display: "Syne", "Arial Black", Impact, sans-serif;
+    --body: "Atkinson Hyperlegible", "Segoe UI", Helvetica, Arial, sans-serif;
+    --data: "JetBrains Mono", "SF Mono", Consolas, monospace;
+    color-scheme: dark;
+  }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--void); color: var(--ink); font-family: var(--body); overflow: hidden; }
+  #stage { position: fixed; inset: 0; display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+  #stage.drag { cursor: grabbing; }
+  .bar { position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+    background: color-mix(in srgb, var(--void) 72%, transparent); backdrop-filter: blur(6px); border-bottom: 1px solid var(--hairline); font-size: 13px; }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--void); }
+  .bar .lbl { font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: 11px; color: var(--muted); margin-right: 4px; }
+  button { font: inherit; font-family: var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--hairline); border-radius: 4px; padding: 7px 10px; min-height: 36px; cursor: pointer; }
+  button:hover { background: var(--raised); }
+  button:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+  button.on { border-color: var(--violet); color: var(--violet); }
+  .grow { flex: 1 1 auto; }
+  .coords { font-family: var(--data); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+  .mark { position: fixed; left: max(24px, env(safe-area-inset-left, 0px)); bottom: calc(24px + env(safe-area-inset-bottom, 0px)); pointer-events: none; }
+  .mark h1 { margin: 0; font-family: var(--display); font-weight: 800; font-size: clamp(44px, 9vw, 112px); line-height: .95; letter-spacing: -.02em; text-wrap: balance; text-shadow: 0 0 24px var(--void), 0 0 2px var(--void); }
+  .mark p { margin: 8px 0 0 2px; font-size: 14px; color: var(--muted); text-shadow: 0 0 12px var(--void); }
+  .hint { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); font-size: 12px; color: var(--muted); text-align: right; text-shadow: 0 0 10px var(--void); }
+  @media (max-width: 560px) { .hint { display: none; } .coords { display: none; } }
+</style>
+
+<canvas id="stage" aria-label="A live Julia or Mandelbrot set in violet, green and magenta on black. Scroll or pinch to zoom, drag to pan."></canvas>
+
+<div class="bar" role="toolbar" aria-label="Fractal controls">
+  <span class="lbl">Seed</span>
+  <button id="p0" type="button" class="on">Ring</button>
+  <button id="p1" type="button">Rabbit</button>
+  <button id="p2" type="button">Dendrite</button>
+  <button id="p3" type="button">Mandelbrot</button>
+  <span class="lbl" style="margin-left:8px">Depth</span>
+  <button id="less" type="button" aria-label="Fewer iterations">−</button>
+  <span id="iter" class="coords" style="color:var(--ink)">400</span>
+  <button id="more" type="button" aria-label="More iterations">+</button>
+  <button id="reset" type="button">Reset view</button>
+  <button id="copy" type="button">Copy view</button>
+  <span class="grow"></span>
+  <span id="coords" class="coords">—</span>
+</div>
+
+<div class="mark">
+  <h1>Open<br>Moment</h1>
+  <p>Every number is somebody.</p>
+</div>
+<div class="hint">scroll / pinch to zoom · drag to pan · double-click to zoom in</div>
+
+<script>
+(function () {
+  const cv = document.getElementById('stage'), ctx = cv.getContext('2d');
+  const PRESETS = [
+    { name: 'Ring', julia: true, cr: -0.4, ci: 0.6, cx: 0, cy: 0, scale: 3.2 },
+    { name: 'Rabbit', julia: true, cr: -0.123, ci: 0.745, cx: 0, cy: 0, scale: 3.0 },
+    { name: 'Dendrite', julia: true, cr: -0.8, ci: 0.156, cx: 0, cy: 0, scale: 3.2 },
+    { name: 'Mandelbrot', julia: false, cr: 0, ci: 0, cx: -0.6, cy: 0, scale: 3.4 }
+  ];
+  let view = Object.assign({}, PRESETS[0]), maxIter = 400, dpr = Math.min(2, window.devicePixelRatio || 1);
+  let W = 0, H = 0, gen = 0, pending = 0;
+
+  // Worker: smooth escape-time colouring mapped onto the slick palette.
+  const src = `
+    const P = [[8,5,15],[160,107,255],[55,232,164],[255,90,214],[241,235,255],[160,107,255],[8,5,15]];
+    function col(t){ t = t - Math.floor(t); const s = t*(P.length-1), i = Math.floor(s), f = s - i; const a = P[i], b = P[Math.min(i+1,P.length-1)];
+      return [a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f, a[2]+(b[2]-a[2])*f]; }
+    onmessage = (e) => {
+      const { gen, y0, y1, W, H, step, v, maxIter } = e.data;
+      const rows = Math.ceil((y1 - y0) / step), cols = Math.ceil(W / step);
+      const out = new Uint8ClampedArray(rows * cols * 4);
+      const asp = W / H, L2 = Math.log(2);
+      let k = 0;
+      for (let py = y0; py < y1; py += step) for (let px = 0; px < W; px += step) {
+        const x0 = v.cx + (px / W - 0.5) * v.scale * asp, y0c = v.cy + (py / H - 0.5) * v.scale;
+        let zr, zi, cr, ci;
+        if (v.julia) { zr = x0; zi = y0c; cr = v.cr; ci = v.ci; } else { zr = 0; zi = 0; cr = x0; ci = y0c; }
+        let n = 0, zr2 = zr*zr, zi2 = zi*zi;
+        while (n < maxIter && zr2 + zi2 < 256) { zi = 2*zr*zi + ci; zr = zr2 - zi2 + cr; zr2 = zr*zr; zi2 = zi*zi; n++; }
+        let r = 8, g = 5, b = 15;
+        if (n < maxIter) { const mu = n + 1 - Math.log(Math.log(zr2 + zi2) / 2) / L2; const c = col(mu / 48 + 0.02); r = c[0]; g = c[1]; b = c[2]; }
+        out[k++] = r; out[k++] = g; out[k++] = b; out[k++] = 255;
+      }
+      postMessage({ gen, y0, y1, step, cols, rows, out }, [out.buffer]);
+    };`;
+  const url = URL.createObjectURL(new Blob([src], { type: 'text/javascript' }));
+  const N = Math.max(2, Math.min(8, navigator.hardwareConcurrency || 4));
+  const workers = []; for (let i = 0; i < N; i++) { const w = new Worker(url); w.onmessage = onTile; workers.push(w); }
+
+  function onTile(e) {
+    const d = e.data; if (d.gen !== gen) return;
+    const img = new ImageData(d.out, d.cols, d.rows);
+    if (d.step === 1) { ctx.putImageData(img, 0, d.y0); }
+    else { const off = document.createElement('canvas'); off.width = d.cols; off.height = d.rows; off.getContext('2d').putImageData(img, 0, 0);
+      ctx.imageSmoothingEnabled = false; ctx.drawImage(off, 0, d.y0, W, d.rows * d.step); }
+    if (--pending === 0 && d.step > 1) pass(1);
+  }
+  function pass(step) {
+    const g = gen; const bands = N * (step === 1 ? 3 : 1); const h = Math.ceil(H / bands / step) * step; pending = 0;
+    for (let i = 0; i < bands; i++) { const y0 = i * h; if (y0 >= H) break; const y1 = Math.min(H, y0 + h); pending++;
+      workers[i % N].postMessage({ gen: g, y0, y1, W, H, step, v: view, maxIter }); }
+  }
+  function render() { gen++; pass(4); showCoords(); }
+  function resize() { W = Math.round(cv.clientWidth * dpr); H = Math.round(cv.clientHeight * dpr); cv.width = W; cv.height = H; render(); }
+  function showCoords() {
+    const z = (3.2 / view.scale); const el = document.getElementById('coords');
+    el.textContent = (view.julia ? `c = ${view.cr} ${view.ci >= 0 ? '+' : '−'} ${Math.abs(view.ci)}i · ` : 'z² + c · ') + `center ${view.cx.toPrecision(10)}, ${view.cy.toPrecision(10)} · zoom ${z >= 1000 ? z.toExponential(2) : z.toFixed(2)}×`;
+  }
+  function toWorld(px, py) { const asp = W / H; return [view.cx + (px * dpr / W - 0.5) * view.scale * asp, view.cy + (py * dpr / H - 0.5) * view.scale]; }
+  function zoomAt(px, py, f) { const [wx, wy] = toWorld(px, py); view.scale *= f; const [nx, ny] = toWorld(px, py); view.cx += wx - nx; view.cy += wy - ny; render(); }
+
+  // Interaction
+  let drag = null, pinch = null;
+  cv.addEventListener('wheel', (e) => { e.preventDefault(); zoomAt(e.clientX, e.clientY, Math.exp(e.deltaY * 0.0015)); }, { passive: false });
+  cv.addEventListener('dblclick', (e) => zoomAt(e.clientX, e.clientY, 0.4));
+  cv.addEventListener('pointerdown', (e) => { cv.setPointerCapture(e.pointerId); if (drag && drag.id !== e.pointerId) { pinch = { a: drag, b: { id: e.pointerId, x: e.clientX, y: e.clientY }, scale: view.scale }; return; } drag = { id: e.pointerId, x: e.clientX, y: e.clientY }; cv.classList.add('drag'); });
+  cv.addEventListener('pointermove', (e) => {
+    if (pinch) { const p = e.pointerId === pinch.a.id ? pinch.a : pinch.b; const d0 = Math.hypot(pinch.a.x - pinch.b.x, pinch.a.y - pinch.b.y); p.x = e.clientX; p.y = e.clientY;
+      const d1 = Math.hypot(pinch.a.x - pinch.b.x, pinch.a.y - pinch.b.y); if (d0 > 0 && d1 > 0) zoomAt((pinch.a.x + pinch.b.x) / 2, (pinch.a.y + pinch.b.y) / 2, d0 / d1); return; }
+    if (!drag || e.pointerId !== drag.id) return;
+    const asp = W / H; view.cx -= (e.clientX - drag.x) * dpr / W * view.scale * asp; view.cy -= (e.clientY - drag.y) * dpr / H * view.scale; drag.x = e.clientX; drag.y = e.clientY; render();
+  });
+  const up = (e) => { if (pinch && (e.pointerId === pinch.a.id || e.pointerId === pinch.b.id)) { pinch = null; drag = null; } if (drag && e.pointerId === drag.id) drag = null; cv.classList.remove('drag'); };
+  cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+
+  PRESETS.forEach((p, i) => document.getElementById('p' + i).addEventListener('click', () => { view = Object.assign({}, p); document.querySelectorAll('.bar button').forEach(b => b.classList.remove('on')); document.getElementById('p' + i).classList.add('on'); render(); }));
+  document.getElementById('reset').addEventListener('click', () => { const p = PRESETS.find(p => p.name === view.name); view = Object.assign({}, p); render(); });
+  const iterEl = document.getElementById('iter');
+  document.getElementById('more').addEventListener('click', () => { maxIter = Math.min(4000, Math.round(maxIter * 1.5)); iterEl.textContent = maxIter; render(); });
+  document.getElementById('less').addEventListener('click', () => { maxIter = Math.max(50, Math.round(maxIter / 1.5)); iterEl.textContent = maxIter; render(); });
+  document.getElementById('copy').addEventListener('click', (ev) => {
+    const text = JSON.stringify({ ...view, maxIter }); const b = ev.currentTarget;
+    const done = () => { b.textContent = 'Copied'; setTimeout(() => b.textContent = 'Copy view', 1200); };
+    try { navigator.clipboard.writeText(text).then(done, () => { document.getElementById('coords').textContent = text; }); } catch (e) { document.getElementById('coords').textContent = text; }
+  });
+  window.addEventListener('resize', resize);
+  resize();
+})();
+</script>
