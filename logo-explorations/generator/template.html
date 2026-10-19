@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>__TITLE__</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Atkinson+Hyperlegible:wght@400&display=swap">
+<style>
+body{margin:0}
+a{color:#a06bff}a:hover{color:#ff5ad6}
+</style>
+</helmet>
+<div style="width: 1040px; height: 680px; box-sizing: border-box; padding: 60px; background: #08050f; color: #f1ebff; display: flex; align-items: center; gap: 64px; font-family: 'Atkinson Hyperlegible', sans-serif;">
+  <svg width="560" height="560" viewBox="0 0 560 560" role="img" aria-label="__ALT__" style="flex: none;">
+__GEOMETRY__
+  </svg>
+  <div style="display: flex; flex-direction: column; gap: 16px; min-width: 0;">
+    <div style="font-family: Syne, sans-serif; font-weight: 800; font-size: 72px; line-height: 0.95; letter-spacing: -0.02em;">Open<br>Moment</div>
+    <div style="font-size: 16px; line-height: 22px; color: #ab9ec6;">Every number is somebody.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1040,"height":680}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
