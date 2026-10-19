@@ -8,7 +8,7 @@ Every number is somebody.
 
 - `mark/index.html` — the mark itself: a live Julia / Mandelbrot renderer in the brand palette. Open it in a browser; scroll to zoom, drag to pan, "Copy view" exports the seed, center and zoom that define a specific instance of the logo. The logo is a formula, not a file.
 - `brand/` — the brand sheet: `README.md` (brand book), `Visual language.md` (the breakdown rule), `tokens.json` (colors in Slick and Daylight themes, type, spacing, radius), and component previews.
-- `logo-explorations/` — earlier computed marks (deep quadtree, Pythagoras tree, Apollonian gasket, dragon curve) and the Python generator that produced their geometry.
+- `logo-explorations/` — earlier rounds. `generator/gen.py` computes the four fractal marks (deep quadtree, Pythagoras tree, Apollonian gasket, dragon curve) as SVG geometry and `template.html` wraps one into an artboard. `round-1/` holds the first, simpler hand-drawn marks.
 
 ## Mark seeds
 
