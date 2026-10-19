@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Aperture mark</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Atkinson+Hyperlegible:wght@400&display=swap">
+<style>
+body{margin:0}
+a{color:#a06bff}a:hover{color:#ff5ad6}
+</style>
+</helmet>
+<div style="width: 640px; height: 440px; box-sizing: border-box; padding: 48px; background: #08050f; color: #f1ebff; display: flex; align-items: center; gap: 48px; font-family: 'Atkinson Hyperlegible', sans-serif;">
+  <svg width="200" height="200" viewBox="-100 -100 200 200" role="img" aria-label="Nested square outlines, each turned a little further and smaller than the last, spiralling inward to a small magenta square" style="flex: none;">
+    <rect x="-80" y="-80" width="160" height="160" fill="none" stroke="#a06bff" stroke-width="10"/>
+    <rect x="-62" y="-62" width="124" height="124" fill="none" stroke="#37e8a4" stroke-width="9" transform="rotate(12)"/>
+    <rect x="-47" y="-47" width="94" height="94" fill="none" stroke="#a06bff" stroke-width="8" transform="rotate(24)"/>
+    <rect x="-35" y="-35" width="70" height="70" fill="none" stroke="#37e8a4" stroke-width="7" transform="rotate(36)"/>
+    <rect x="-25" y="-25" width="50" height="50" fill="none" stroke="#a06bff" stroke-width="6" transform="rotate(48)"/>
+    <rect x="-16" y="-16" width="32" height="32" fill="none" stroke="#37e8a4" stroke-width="5" transform="rotate(60)"/>
+    <rect x="-6" y="-6" width="12" height="12" fill="#ff5ad6" transform="rotate(72)"/>
+  </svg>
+  <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0;">
+    <div style="font-family: Syne, sans-serif; font-weight: 800; font-size: 56px; line-height: 0.95; letter-spacing: -0.02em;">Open<br>Moment</div>
+    <div style="font-size: 14px; line-height: 20px; color: #ab9ec6;">Every number is somebody.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":640,"height":440}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
